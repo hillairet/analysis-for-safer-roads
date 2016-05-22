@@ -1,6 +1,6 @@
-# analysis-for-safer-roads
+# Analysis for safer roads
 
-# Synopsis
+## Synopsis
 While I was driving in Japan one day, I have found myself wondering if the color of a car had any impact on its probably to be into an accident.
 If a car is bright red in a country where most cars are white, black, or grey, then I would expect it to be more noticeable and hopefully less involved in car accidents.
 
@@ -14,8 +14,16 @@ For example:
 - Is it safer to walk on the side of the road facing the incoming cars or turning our backs to them ?
 - Is the public lighting system sufficient or are the accidents still occuring mostly in poorly lit roads ?
 - Does daylight saving help reduce or increase the number of accidents ?
+- Can we predict the gravity of an accident based on basic information, maybe to guide emergency response teams ?
 
 The data was obtain from the French government open data website under the Open Licence.
 https://www.data.gouv.fr/fr/datasets/base-de-donnees-accidents-corporels-de-la-circulation/
 
+
+
+## Software used
+- Python modules
+  * Pandas
+  * Matplotlib
+  * Seaborn
 
