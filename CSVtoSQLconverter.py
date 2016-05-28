@@ -29,7 +29,7 @@ def clean_up_characteristics(Year):
         The Pandas dataframe of the characteristics of accidents.
     '''
 
-    print(' -> Clean up Characteristics')
+    print(' -> Clean up Characteristics',Year)
 
     caract_df = pd.read_csv(("data/%s_France_caracteristiques.csv" % Year),
                             sep=',', encoding='latin-1')
@@ -95,7 +95,7 @@ def clean_up_locations(Year):
         The Pandas dataframe of the vehicles in accidents.
     '''
 
-    print(' -> Clean up Locations')
+    print(' -> Clean up Locations', Year)
 
     lieux_df = pd.read_csv(("data/%s_France_lieux.csv" % Year),
                             sep=',', encoding='latin-1')
@@ -132,7 +132,7 @@ def clean_up_vehicles(Year):
         The Pandas dataframe of the vehicles in accidents.
     '''
 
-    print(' -> Clean up Vehicles')
+    print(' -> Clean up Vehicles', Year)
 
     vehicules_df = pd.read_csv(("data/%s_France_vehicules.csv" % Year),
                                 sep=',', encoding='latin-1')
@@ -140,10 +140,16 @@ def clean_up_vehicles(Year):
     # 1) Remove columns
     clean_df = vehicules_df.drop('senc',axis=1)
 
-    # 2) Rename columns
+    # 2) Reorganize vehicle type categories
+    newMap = {}
+    for i,I in enumerate(clean_df['catv'].value_counts().sort_index().index):
+        newMap[I] = i+1
+        clean_df['catv'] = clean_df['catv'].map(newMap)
+
+    # 3) Rename columns
     clean_df.rename(columns={'Num_Acc':'accident id', 'catv':'vehicle type',
                             'obs':'fixed obj hit','obsm':'moving obj hit',
-                            'choc':'initial hit location','manv':'maneuver',
+                            'choc':'impact location','manv':'maneuver',
                             'occutc':'nb occupants public transit',
                             'num_veh':'vehicle id'}, inplace=True)
 
@@ -165,7 +171,7 @@ def clean_up_users(Year):
         The Pandas dataframe of the road users
     '''
 
-    print(' -> Clean up Users')
+    print(' -> Clean up Users', Year)
 
     usagers_df = pd.read_csv(("data/%s_France_usagers.csv" % Year),
                             sep=',', encoding='latin-1')
@@ -230,32 +236,37 @@ if __name__ == '__main__':
     parser.add_option("-R", "--replace", dest="replace", help="Recreate the database tables from scratch.", action="store_true")
     (options, args) = parser.parse_args()
 
-    year = args[0]
-
-    # clean up Characteristics
-    charact_df = clean_up_characteristics(year)
-
-    # clean up Locations
-    locations_df = clean_up_locations(year)
-
-    # clean up Vehicles
-    vehicles_df = clean_up_vehicles(year)
-
-    # clean up Users
-    users_df = clean_up_users(year)
-
-    # Setup SQL engine
-    # Load the dataframes in the database only if there wasn't
-    # any problem in the preparation of the dataframes
-    print(' -> Load dataframes to SQL database')
-    sqlEngine = load_sql_engine()
-
-    if options.replace:
-        if_exists = 'replace'
+    if args[0].lower() == 'all':
+        Years = ['2010','2011','2012','2013','2014']
+        options.replace = True
     else:
-        if_exists = 'append'
+        Years = [args[0]]
 
-    charact_df.to_sql(name='characteristics', con=sqlEngine, if_exists = if_exists, index=False)
-    locations_df.to_sql(name='locations', con=sqlEngine, if_exists = if_exists, index=False)
-    vehicles_df.to_sql(name='vehicles', con=sqlEngine, if_exists = if_exists, index=False)
-    users_df.to_sql(name='users', con=sqlEngine, if_exists = if_exists, index=False)
+    for y_idx,year in enumerate(Years):
+        # clean up Characteristics
+        charact_df = clean_up_characteristics(year)
+
+        # clean up Locations
+        locations_df = clean_up_locations(year)
+
+        # clean up Vehicles
+        vehicles_df = clean_up_vehicles(year)
+
+        # clean up Users
+        users_df = clean_up_users(year)
+
+        # Setup SQL engine
+        # Load the dataframes in the database only if there wasn't
+        # any problem in the preparation of the dataframes
+        print(' -> Load dataframes to SQL database',year)
+        sqlEngine = load_sql_engine()
+
+        if options.replace and y_idx == 0:
+            if_exists = 'replace'
+        else:
+            if_exists = 'append'
+
+        charact_df.to_sql(name='characteristics', con=sqlEngine, if_exists = if_exists, index=False)
+        locations_df.to_sql(name='locations', con=sqlEngine, if_exists = if_exists, index=False)
+        vehicles_df.to_sql(name='vehicles', con=sqlEngine, if_exists = if_exists, index=False)
+        users_df.to_sql(name='users', con=sqlEngine, if_exists = if_exists, index=False)
