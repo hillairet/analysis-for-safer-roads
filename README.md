@@ -31,6 +31,7 @@ https://www.data.gouv.fr/fr/datasets/base-de-donnees-accidents-corporels-de-la-c
 
 
 ## Software used
+- Jupyter Notebook
 - Python with various modules:
   * Pandas
   * Matplotlib
