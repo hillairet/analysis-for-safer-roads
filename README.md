@@ -20,10 +20,19 @@ The data was obtain from the French government open data website under the Open 
 https://www.data.gouv.fr/fr/datasets/base-de-donnees-accidents-corporels-de-la-circulation/
 
 
+## Outline
+1. [Section1 - Data wrangling](https://github.com/hillairet/analysis-for-safer-roads/blob/master/Section1%20-%20Data%20Wrangling.ipynb)
+2. Section2 - Data visualization
+	* [a - Time dependence](https://github.com/hillairet/analysis-for-safer-roads/blob/master/Section2a%20-%20Data%20Visualization.ipynb)
+	* [b - Who is involved in accidents](https://github.com/hillairet/analysis-for-safer-roads/blob/master/Section2b%20-%20Data%20Visualization.ipynb)
+3. Section3 - Predict gravity
+	* a - Preparation of features and target
+	* b - Machine learning
+
 
 ## Software used
-- Python modules
+- Python with various modules:
   * Pandas
   * Matplotlib
   * Seaborn
-
+- MariaDB database
