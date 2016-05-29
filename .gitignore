@@ -61,7 +61,12 @@ target/
 #Ipython Notebook
 .ipynb_checkpoints
 
-Notes
+.*
+
 Log
 
 Sandbox
+
+data/201[0-3]_France_*
+data/Description_bases_donnees_ONISR_-Annees_2010_2014_le_4_mars_2016.pdf
+data/2010-2015_France_*
