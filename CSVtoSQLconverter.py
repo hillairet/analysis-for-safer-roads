@@ -144,7 +144,7 @@ def clean_up_vehicles(Year):
     newMap = {}
     for i,I in enumerate(clean_df['catv'].value_counts().sort_index().index):
         newMap[I] = i+1
-        clean_df['catv'] = clean_df['catv'].map(newMap)
+    clean_df['catv'] = clean_df['catv'].map(newMap)
 
     # 3) Rename columns
     clean_df.rename(columns={'Num_Acc':'accident id', 'catv':'vehicle type',
