@@ -23,11 +23,11 @@ https://www.data.gouv.fr/fr/datasets/base-de-donnees-accidents-corporels-de-la-c
 ## Outline
 1. [Section1 - Data wrangling](https://github.com/hillairet/analysis-for-safer-roads/blob/master/Section1%20-%20Data%20Wrangling.ipynb)
 2. Section2 - Data visualization
-	* [a - Time dependence](https://github.com/hillairet/analysis-for-safer-roads/blob/master/Section2a%20-%20Data%20Visualization.ipynb)
-	* [b - Who is involved in accidents](https://github.com/hillairet/analysis-for-safer-roads/blob/master/Section2b%20-%20Data%20Visualization.ipynb)
+	* [a) Time dependence](https://github.com/hillairet/analysis-for-safer-roads/blob/master/Section2a%20-%20Data%20Visualization.ipynb)
+	* [b) Who is involved in accidents](https://github.com/hillairet/analysis-for-safer-roads/blob/master/Section2b%20-%20Data%20Visualization.ipynb)
 3. Section3 - Predict gravity
-	* a - Preparation of features and target
-	* b - Machine learning
+	* a) [Preparation of features and target](https://github.com/hillairet/analysis-for-safer-roads/blob/master/Section3a%20-%20Predicting%20the%20gravity.ipynb)
+	* b) Machine learning
 
 
 ## Software used
