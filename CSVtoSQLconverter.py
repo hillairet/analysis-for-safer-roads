@@ -208,7 +208,7 @@ def clean_up_users(Year):
     # 3) Rename the columns
     clean_df.rename(columns={'Num_Acc':'accident id', 'num_veh':'vehicle id',
                              'place':'location in vehicle','catu':'user type',
-                             'grav':'gravity','sexe':'sex','trajet':'journey type',
+                             'grav':'severity','sexe':'sex','trajet':'journey type',
                              'locp':'pedestrian location','actp':'pedestrian action',
                              'etatp':'pedestrian company'},inplace=True)
     
