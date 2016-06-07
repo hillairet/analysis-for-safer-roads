@@ -14,7 +14,7 @@ For example:
 - Is it safer to walk on the side of the road facing the incoming cars or turning our backs to them ?
 - Is the public lighting system sufficient or are the accidents still occuring mostly in poorly lit roads ?
 - Does daylight saving help reduce or increase the number of accidents ?
-- Can we predict the gravity of an accident based on basic information, maybe to guide emergency response teams ?
+- Can we predict the severity of an accident for each road user based on available information, maybe to guide emergency response teams ?
 
 The data was obtain from the French government open data website under the Open Licence.
 https://www.data.gouv.fr/fr/datasets/base-de-donnees-accidents-corporels-de-la-circulation/
@@ -25,8 +25,8 @@ https://www.data.gouv.fr/fr/datasets/base-de-donnees-accidents-corporels-de-la-c
 2. Section2 - Data visualization
 	* a) [Time dependence](https://github.com/hillairet/analysis-for-safer-roads/blob/master/Section2a%20-%20Data%20Visualization.ipynb)
 	* b) [Who is involved in accidents](https://github.com/hillairet/analysis-for-safer-roads/blob/master/Section2b%20-%20Data%20Visualization.ipynb)
-3. Section3 - Predict gravity
-	* a) [Preparation of features and target](https://github.com/hillairet/analysis-for-safer-roads/blob/master/Section3a%20-%20Predicting%20the%20gravity.ipynb)
+3. Section3 - Predict severity
+	* a) [Preparation of features and target](https://github.com/hillairet/analysis-for-safer-roads/blob/master/Section3a%20-%20Predicting%20the%20severity.ipynb)
 	* b) Machine learning
 
 
