@@ -266,7 +266,10 @@ if __name__ == '__main__':
         else:
             if_exists = 'append'
 
-        charact_df.to_sql(name='characteristics', con=sqlEngine, if_exists = if_exists, index=False)
-        locations_df.to_sql(name='locations', con=sqlEngine, if_exists = if_exists, index=False)
-        vehicles_df.to_sql(name='vehicles', con=sqlEngine, if_exists = if_exists, index=False)
-        users_df.to_sql(name='users', con=sqlEngine, if_exists = if_exists, index=False)
+        sql_options = {'con':sqlEngine, 'if_exists':if_exists,
+                'index':False, 'chunksize':100}
+
+        charact_df.to_sql(name='characteristics', **sql_options)
+        locations_df.to_sql(name='locations', **sql_options)
+        vehicles_df.to_sql(name='vehicles', **sql_options)
+        users_df.to_sql(name='users', **sql_options)
