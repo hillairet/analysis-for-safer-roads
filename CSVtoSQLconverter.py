@@ -29,7 +29,7 @@ def clean_up_characteristics(Year):
         The Pandas dataframe of the characteristics of accidents.
     '''
 
-    print(' -> Clean up Characteristics',Year)
+    print('           - ',Year)
 
     caract_df = pd.read_csv(("data/%s_France_caracteristiques.csv" % Year),
                             sep=',', encoding='latin-1')
@@ -67,6 +67,11 @@ def clean_up_characteristics(Year):
                             'com':'city id','dep':'area id'},
                     inplace=True)
 
+    # The accident id is unique so we can use it as index now
+    # and primary key in the SQL database
+    clean_df.set_index(['accident id'],inplace=True,verify_integrity=True)
+    clean_df.index.names = ['accident id']
+
     # 4) Area ID correction
     # For some reason most area IDs have an added 0 except for the overseas
     # areas 971, 973, 974, and 976.
@@ -95,7 +100,7 @@ def clean_up_locations(Year):
         The Pandas dataframe of the vehicles in accidents.
     '''
 
-    print(' -> Clean up Locations', Year)
+    print('           - ',Year)
 
     lieux_df = pd.read_csv(("data/%s_France_lieux.csv" % Year),
                             sep=',', encoding='latin-1')
@@ -115,6 +120,11 @@ def clean_up_locations(Year):
                             'env1':'school distance'},
                     inplace=True)
 
+    # The accident id is unique so we can use it as index now
+    # and primary key in the SQL database
+    clean_df.set_index(['accident id'],inplace=True,verify_integrity=True)
+    clean_df.index.names = ['accident id']
+
     return clean_df
 
 
@@ -132,7 +142,7 @@ def clean_up_vehicles(Year):
         The Pandas dataframe of the vehicles in accidents.
     '''
 
-    print(' -> Clean up Vehicles', Year)
+    print('           - ',Year)
 
     vehicules_df = pd.read_csv(("data/%s_France_vehicules.csv" % Year),
                                 sep=',', encoding='latin-1')
@@ -171,7 +181,7 @@ def clean_up_users(Year):
         The Pandas dataframe of the road users
     '''
 
-    print(' -> Clean up Users', Year)
+    print('           - ',Year)
 
     usagers_df = pd.read_csv(("data/%s_France_usagers.csv" % Year),
                             sep=',', encoding='latin-1')
@@ -233,7 +243,8 @@ def load_sql_engine():
 if __name__ == '__main__':
     # Check the options
     parser = OptionParser()
-    parser.add_option("-R", "--replace", dest="replace", help="Recreate the database tables from scratch.", action="store_true")
+    parser.add_option("-R", "--replace", dest="replace",
+            help="Recreate the database tables from scratch.", action="store_true")
     (options, args) = parser.parse_args()
 
     if args[0].lower() == 'all':
@@ -242,34 +253,42 @@ if __name__ == '__main__':
     else:
         Years = [args[0]]
 
-    for y_idx,year in enumerate(Years):
-        # clean up Characteristics
-        charact_df = clean_up_characteristics(year)
+    # Setup SQL engine
+    # Load the dataframes in the database only if there wasn't
+    # any problem in the preparation of the dataframes
+    sqlEngine = load_sql_engine()
 
-        # clean up Locations
-        locations_df = clean_up_locations(year)
+    tables={'characteristics': [clean_up_characteristics, 'accident id'],
+            'users': [clean_up_users, 'index'],
+            'locations': [clean_up_locations, 'accident id'],
+            'vehicles': [clean_up_vehicles, 'index']}
 
-        # clean up Vehicles
-        vehicles_df = clean_up_vehicles(year)
+    for name, params in tables.items():
+        new_df = DataFrame()
+        print(' -> Clean up {} dataframe'.format(name))
+        for year in Years:
+            # clean up the table
+            clean_func = params[0]
+            tmp_df = clean_func(year)
 
-        # clean up Users
-        users_df = clean_up_users(year)
+            if new_df.empty:
+                new_df = tmp_df
+            else:
+                new_df = new_df.append(tmp_df, (params[1] == 'index'))
 
-        # Setup SQL engine
-        # Load the dataframes in the database only if there wasn't
-        # any problem in the preparation of the dataframes
-        print(' -> Load dataframes to SQL database',year)
-        sqlEngine = load_sql_engine()
+        print(' -> Load {} dataframe to SQL database'.format(name))
 
-        if options.replace and y_idx == 0:
+        if options.replace:
             if_exists = 'replace'
         else:
             if_exists = 'append'
 
         sql_options = {'con':sqlEngine, 'if_exists':if_exists,
-                'index':False, 'chunksize':100}
+                'index':True, 'chunksize':100}
 
-        charact_df.to_sql(name='characteristics', **sql_options)
-        locations_df.to_sql(name='locations', **sql_options)
-        vehicles_df.to_sql(name='vehicles', **sql_options)
-        users_df.to_sql(name='users', **sql_options)
+        new_df.to_sql(name=name, **sql_options)
+
+        # We want the index to be a primary key to speed things up among other reasons.
+        sqlEngine.execute('''ALTER TABLE {}
+                ADD PRIMARY KEY (`{}`)'''.format(name,params[1]))
+
